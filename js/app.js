@@ -53,10 +53,11 @@ var content = document.getElementById('content');
 
 var voteForAnImage = function(event){
   if(event.target.className === 'product'){
-    product[event.target.id].totalVotes++;
-    if(totalVotes === 25){
-      console.log('Done');
-    }
+    console.log('Done');
+    // product[event.target.id].totalVotes++;
+    // if(totalVotes === 25){
+    //   console.log('Done');
+    // }
   }
 };
 content.addEventListener('click', voteForAnImage);
