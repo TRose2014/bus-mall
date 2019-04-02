@@ -1,3 +1,39 @@
 body{
     background-color: hotpink;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: repeat(3, 200px);
+}
+
+header{
+    grid-column-start: 1;
+    grid-column-end: 13;
+    text-align: center;
+}
+
+img{
+    width: auto;
+    height: 100%;
+}
+
+#imgOne{
+    grid-column-start: 1;
+    grid-column-end: 5;
+
+}
+
+#imgTwo{
+    grid-column-start: 5;
+    grid-column-end: 9;
+}
+
+#imgThree{
+    grid-column-start: 9;
+    grid-column-end: 13;
+
+}
+
+#results{
+    grid-column-start: 1;
+    grid-column-end: 6;
 }
