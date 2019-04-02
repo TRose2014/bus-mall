@@ -46,7 +46,11 @@ Product.prototype.render = function(parentId){
   img.setAttribute('src', this.imgSrcPath);
   img.setAttribute('class', 'product');
 
-}
+};
+
+var resultList = function(){
+  document.getElementById('resultList').style.visibility = 'visible';
+};
 
 
 var content = document.getElementById('content');
@@ -54,24 +58,42 @@ var content = document.getElementById('content');
 var voteForAnImage = function(event){
   if(event.target.className === 'product'){
     console.log('Done');
-    // product[event.target.id].totalVotes++;
-    // if(totalVotes === 25){
-    //   console.log('Done');
-    // }
+    totalVotes++;
+    product[event.target.id];
+    console.log(totalVotes);
+    if(totalVotes === 5){
+      content.removeEventListener('click', voteForAnImage);
+      console.log(totalVotes + ' votes completed');
+      resultList();
+    }
   }
 };
 content.addEventListener('click', voteForAnImage);
 
-
+var newImage = 0;
 //Generating Random Picture and attaching it to the body
 var displayRandomImage = function(productsArray){
   var newImage = Math.floor(Math.random() * productsArray.length);
   
   //stackoverflow - https://stackoverflow.com/questions/14004318/show-random-image-from-array-in-javascript
   var randomImage = productsArray[newImage];
+  console.log(randomImage);
   var randomImageString = '<img src="'+ randomImage + '" alt = "test">';
-  document.write(randomImageString); document.close();
+  // document.write(randomImageString); document.close();
   console.log('<img src="'+ randomImage);
 };
+
+//create empty array, push randomimage path into an array and use array.protoype find to get the index number
+
+var imageOne = document.getElementById('imgOne');
+imageOne.setAttribute('src', productSrc[6]);
+
+var imageTwo = document.getElementById('imgTwo');
+imageTwo.setAttribute('src', productSrc[8]);
+
+var imageThree = document.getElementById('imgThree');
+imageThree.setAttribute('src', productSrc[1]);
+
+
 
 displayRandomImage(productSrc);

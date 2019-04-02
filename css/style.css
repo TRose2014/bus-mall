@@ -19,18 +19,18 @@ header{
     height: 100%;
 }
 
-#imgOne{
+#figOne{
     grid-column-start: 1;
     grid-column-end: 5;
 
 }
 
-#imgTwo{
+#figTwo{
     grid-column-start: 5;
     grid-column-end: 9;
 }
 
-#imgThree{
+#figThree{
     grid-column-start: 9;
     grid-column-end: 13;
 
@@ -39,4 +39,10 @@ header{
 #results{
     grid-column-start: 1;
     grid-column-end: 6;
+    visibility: hidden;
+    
+}
+
+#resultList{
+    visibility: hidden;
 }
