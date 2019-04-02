@@ -1,5 +1,8 @@
 body{
     background-color: hotpink;
+}
+
+#content{
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     grid-template-rows: repeat(3, 200px);
@@ -11,7 +14,7 @@ header{
     text-align: center;
 }
 
-img{
+.product{
     width: auto;
     height: 100%;
 }
