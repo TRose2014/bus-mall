@@ -92,7 +92,7 @@ var voteForAnImage = function(event){
     //---------Has new images appear after one click and nothing after that---------//
     displayRandomImage(productSrc);
     addRandomImagesToDOM();
-
+  
     totalVotesOnPage++;
     console.log(totalVotesOnPage);
     //---------NEED TO GET TO WORK----------------//
@@ -179,7 +179,7 @@ var removeImagesAfterClick = function(imageHolderOne, imageHolderTwo, imageHolde
   imageHolder = document.getElementById('imgThree');
   while (imageHolder.firstChild){
     imageHolder.removeChild(imageHolder.firstChild);
-}
+  }
 };
 
 console.log(lastCycleImage[0]);
