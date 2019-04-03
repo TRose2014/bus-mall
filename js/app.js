@@ -65,6 +65,7 @@ var voteForAnImage = function(event){
     // console.log('Done');
     totalVotesOnPage++;
     console.log(totalVotesOnPage);
+    setStateToLocalStorage();
     //---------NEED TO GET TO WORK----------------//
     // product[event.target.id].totalVotes++;
     // PRODUCTS[event.target.id].totalVotes++;
@@ -74,6 +75,7 @@ var voteForAnImage = function(event){
       content.removeEventListener('click', voteForAnImage);
       console.log(totalVotesOnPage + ' votes completed');
       resultList();
+      setStateToLocalStorage();
     }
   }
 };
@@ -129,3 +131,27 @@ displayRandomImage(productSrc);
 
 var STATE_KEY = 'counterState';
 var counterState = {};
+// 1. What to put in local storage
+// totalViews - totalVotes - totalVotesOnPage - CurrentCycle - PreviousCyle
+
+//2. When to update local storage
+// totalViews - totalVotes - totalVotesOnPage
+
+
+function setStateToLocalStorage(){
+  localStorage.setItem(STATE_KEY, JSON.stringify(counterState));
+}
+
+// function renderVotes(){
+//   totalVotesOnPage = counterState.totalVotesOnPage;
+//   lastCycleImage = counterState.lastCycleImage;
+// }
+
+function getStateFromLocalStorage(){
+  if(localStorage[STATE_KEY]){
+    var rawState = localStorage.getItem(STATE_KEY);
+    counterState = JSON.parse(rawState);
+  }
+}
+setStateToLocalStorage();
+renderVotes();
