@@ -29,7 +29,7 @@ var totalVotesOnPage = 0;
 var maxImages = 19;
 var minImages = 0;
 var totalViews = 0;
-var lastCycleImage = [];
+// var lastCycleImage = [];
 
 function Product(imgSrcPath, name, HTMLid){
   this.imgSrcPath = imgSrcPath;
@@ -44,6 +44,7 @@ Product.prototype.calculatePercentage = function(){
   return this.totalVotes / this.totalViews;
 };
 Product.prototype.render = function(parentId){
+  this.totalVotes++;
   var parent = document.getElementById(parentId);
   var img = document.getElementById('img');
   img.setAttribute('id', this.HTMLid);
@@ -87,13 +88,18 @@ var content = document.getElementById('content');
 var voteForAnImage = function(event){
   if(event.target.className === 'product'){
     // console.log('Done');
+
+    //---------Has new images appear after one click and nothing after that---------//
+    displayRandomImage(productSrc);
+    addRandomImagesToDOM();
+
     totalVotesOnPage++;
     console.log(totalVotesOnPage);
     //---------NEED TO GET TO WORK----------------//
     // product[event.target.id].totalVotes++;
-    // PRODUCTS[event.target.id].totalVotes++;
+    PRODUCTS[event.target.id].totalVotes++;
     // console.log(totalVotes);
-    // console.log(PRODUCTS[event.target.id]);
+    console.log(PRODUCTS[event.target.id]);
     if(totalVotesOnPage === 5){
       content.removeEventListener('click', voteForAnImage);
       console.log(totalVotesOnPage + ' votes completed');
@@ -107,40 +113,83 @@ content.addEventListener('click', voteForAnImage);
 //Generating Random Picture and attaching it to the body
 var displayRandomImage = function(productsArray){
   var newImage = Math.floor(Math.random() * productsArray.length);
-  console.log(newImage);
-  // };
-
+ 
   //   //stackoverflow - https://stackoverflow.com/questions/14004318/show-random-image-from-array-in-javascript
   var randomImage = productsArray[newImage];
-  lastCycleImage.push(randomImage[0]);
-
-  console.log(lastCycleImage);
-  //create empty array, push randomimage path into an array and use array.protoype find to get the index number
-
-  // var imageOne = document.getElementById('imgOne');
-  // imageOne.setAttribute('src', lastCycleImage[0]);
-
-  // var imageTwo = document.getElementById('imgTwo');
-  // imageTwo.setAttribute('src', lastCycleImage[1]);
-
-  // var imageThree = document.getElementById('imgThree');
-  // imageThree.setAttribute('src', lastCycleImage[2]);
+  return randomImage;
 
 };
+
+// var randomSelectImage = function(){
+//   for(var i =0; i < 3; i++){
+//     var randomIndex = displayRandomImage(productSrc);
+//     while(lastCycleImage.includes(randomIndex)){
+//       randomIndex = displayRandomImage(productSrc);
+//     }
+//     // PRODUCTS[randomIndex].render(`productPosition${i}`);
+//     // lastCycleImage.push(PRODUCTS[randomIndex].HTMLid);
+//     // lastCycleImage.push(randomIndex);
+//   }
+//   if (lastCycleImage > 3){
+//     lastCycleImage.shift();
+//     lastCycleImage.shift();
+//     lastCycleImage.shift();
+//   }
+// };
+
+
+//-------NEEDS TO BE LOOPED-----------//
+var lastCycleImage = displayRandomImage(productSrc);
+console.log(lastCycleImage);
+
+var lastCycleImageOne = displayRandomImage(productSrc);
+console.log(lastCycleImageOne);
+
+var lastCycleImageTwo = displayRandomImage(productSrc);
+console.log(lastCycleImageTwo);
 
 var addRandomImagesToDOM = function(){
   var imageOne = document.getElementById('imgOne');
+  // var child = imageOne.firstElementChild;
+  // if(child){child.remove();}
   imageOne.setAttribute('src', lastCycleImage[0]);
+  imageOne.setAttribute('id', lastCycleImage[2]);
+  imageOne.setAttribute('class', 'product');
 
   var imageTwo = document.getElementById('imgTwo');
-  imageTwo.setAttribute('src', lastCycleImage[1]);
+  imageTwo.setAttribute('src', lastCycleImageOne[0]);
+  imageTwo.setAttribute('id', lastCycleImageOne[2]);
+  imageTwo.setAttribute('class', 'product');
 
   var imageThree = document.getElementById('imgThree');
-  imageThree.setAttribute('src', lastCycleImage[2]);
+  imageThree.setAttribute('src', lastCycleImageTwo[0]);
+  imageThree.setAttribute('id', lastCycleImageTwo[2]);
+  imageThree.setAttribute('class', 'product');
 };
 
-console.log(displayRandomImage(productSrc));
-console.log(displayRandomImage(productSrc));
+var removeImagesAfterClick = function(imageHolderOne, imageHolderTwo, imageHolderThree){
+  var imageHolder = document.getElementById('imgOne');
+  while (imageHolder.firstChild){
+    imageHolder.removeChild(imageHolder.firstChild);
+  }
+  imageHolder = document.getElementById('imgTwo');
+  while (imageHolder.firstChild){
+    imageHolder.removeChild(imageHolder.firstChild);
+  }
+  imageHolder = document.getElementById('imgThree');
+  while (imageHolder.firstChild){
+    imageHolder.removeChild(imageHolder.firstChild);
+}
+};
+
+console.log(lastCycleImage[0]);
+removeImagesAfterClick('figOne', 'figTwo', 'figThree');
+
+// console.log(displayRandomImage(productSrc));
+// displayRandomImage(productSrc.push(lastCycleImage));
+// console.log(lastCycleImage);
+// console.log(displayRandomImage(productSrc));
+
 
 content.addEventListener('click', displayRandomImage);
 
@@ -170,13 +219,14 @@ var resultList = function(){
 //---------------------------
 
 // randomSelectImage();
-displayRandomImage(productSrc);
-addRandomImagesToDOM();
+// displayRandomImage(productSrc);
+// addRandomImagesToDOM();
 
 
 for(var i = 0; i < productSrc.length; i++){
   new Product(productSrc[i][0], productSrc[i][1], productSrc[i][2]);
 }
+
 console.log(PRODUCTS);
 
 //---------------------------
