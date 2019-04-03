@@ -107,7 +107,7 @@ var displayRandomImage = function(productsArray){
 displayRandomImage(productSrc);
 
 // var getNextImages = function(){
-//   for(var i = 0; i < 4; i++){
+//   for(var i = 0; i < 3; i++){
 //     var randomIndex = displayRandomImage();
 //     while(lastCycleImage.includes(randomIndex)){
 //       randomIndex = displayRandomImage();
@@ -122,3 +122,10 @@ displayRandomImage(productSrc);
 //   var randomProduct = new Product(productSrc[i][0], productSrc[i][1], productSrc[i][2]);
 //   randomProduct.render('imgOne');
 // }
+
+//-------------
+//JSON
+//-------------
+
+var STATE_KEY = 'counterState';
+var counterState = {};
