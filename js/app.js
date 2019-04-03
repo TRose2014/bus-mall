@@ -15,7 +15,7 @@ var productSrc = [
   ['./img/pet-sweep.jpg', 'Pet-Sweep', 'pet-sweep'],
   ['./img/scissors.jpg', 'Scissors', 'scissors'],
   ['./img/shark.jpg', 'Shark', 'shark'],
-  ['./img/sweep.jpg', 'Sweep', 'sweep'],
+  ['./img/sweep.png', 'Sweep', 'sweep'],
   ['./img/tauntaun.jpg', 'Tauntaun', 'tauntaun'],
   ['./img/unicorn.jpg', 'Unicorn', 'unicorn'],
   ['./img/usb.gif', 'USB', 'usb'],
@@ -122,3 +122,37 @@ displayRandomImage(productSrc);
 //   var randomProduct = new Product(productSrc[i][0], productSrc[i][1], productSrc[i][2]);
 //   randomProduct.render('imgOne');
 // }
+
+//---------------------------
+//
+// Chart
+//
+//---------------------------
+
+var ctx = document.getElementById('myChart').getContext('2d');
+var myChart = new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: ['Bathroom', 'Shark', 'Unicorn', 'Dragon', 'Pen'],
+    datasets: [{
+      label: '# of Votes',
+      data: [3, 4, 2, 5, 1],
+      backgroundColor: [
+        'rgb(255, 150, 132)',
+        'rgb(54, 162, 235)',
+        'rgb(255, 206, 86)',
+        'rgb(75, 192, 192)',
+        'rgb(153, 2, 255)',
+      ],
+      borderColor: [
+        'rgba(255, 99, 132, 1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(75, 192, 192, 1)',
+        'rgba(153, 102, 255, 1)',
+      ],
+      borderWidth: 1
+
+    }]
+  },
+});

@@ -5,7 +5,7 @@ body{
 #content{
     display: grid;
     grid-template-columns: repeat(12, 1fr);
-    grid-template-rows: repeat(3, 200px);
+    grid-template-rows: repeat(4, 200px);
 }
 
 header{
@@ -45,4 +45,12 @@ header{
 
 #resultList{
     visibility: hidden;
+}
+
+#myChart{
+    display: block;
+    width: 900px! important;
+    height: 500px! important;
+    grid-column-start: 3;
+    grid-column-end: 11;
 }
