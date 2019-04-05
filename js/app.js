@@ -67,9 +67,10 @@ var voteForAnImage = function(event){
     // console.log('Done');
     totalVotesOnPage++;
     console.log(totalVotesOnPage);
-    selectionState.totalVotesOnPage = totalVotesOnPage;
+    // selectionState.totalVotesOnPage = totalVotesOnPage;
   
     displayRandomImage(productSrc);
+    console.log(displayRandomImage(productSrc));
     // PRODUCTS[event.target.id].totalVotes++;
     
     if(totalVotesOnPage === 5){
@@ -78,7 +79,7 @@ var voteForAnImage = function(event){
       resultList();
     }
   }
-  setStateToLocalStorage();
+  // setStateToLocalStorage();
 };
 
 content.addEventListener('click', voteForAnImage);
@@ -99,19 +100,31 @@ var displayRandomImage = function(productsArray){
   //have img paths being pushed into empty array one by one until it hits 5
   //use function to shift 3 images out of array. Still need to have images appear at the same time
   
-  var imageOne = document.getElementById('imgOne');
-  imageOne.setAttribute('src', lastCycleImage[0]);
 
-  var imageTwo = document.getElementById('imgTwo');
-  imageTwo.setAttribute('src', lastCycleImage[1]);
+  //grab the containter. add its first child and then change the img child src and id etc.
+  var figOne = document.getElementById('fig1');
+  var img = figOne.firstChild;
 
-  var imageThree = document.getElementById('imgThree');
+  img = document.getElementById('img1');
+  img.setAttribute('src', lastCycleImage[0]);
+
+
+  var figTwo = document.getElementById('fig2');
+  var imgTwo = figTwo.firstChild;
+
+  imgTwo = document.getElementById('img2');
+  imgTwo.setAttribute('src', lastCycleImage[1]);
+
+  var imageThree = document.getElementById('img3');
   imageThree.setAttribute('src', lastCycleImage[2]);
 
-  selectionState.currentCycle = currentCycle;
-  selectionState.lastCycleImage = lastCycleImage;
+  // selectionState.currentCycle = currentCycle;
+  // selectionState.lastCycleImage = lastCycleImage;
 
 };
+
+console.log(lastCycleImage);
+console.log(displayRandomImage(productSrc));
 
 // displayRandomImage(productSrc);
 
@@ -170,33 +183,33 @@ var myChart = new Chart(ctx, {
 //JSON
 //-------------
 
-var STATE_KEY = 'voteState';
-var selectionState = {
-  totalVotesOnPage: 0,
-  lastCycleImage: [],
-  currentCycle: [],
-};
-// 1. What to put in local storage
-// totalViews - totalVotes - totalVotesOnPage - currentCycle - PreviousCyle
+// var STATE_KEY = 'voteState';
+// var selectionState = {
+//   totalVotesOnPage: 0,
+//   // lastCycleImage: [],
+//   currentCycle: [],
+// };
+// // 1. What to put in local storage
+// // totalViews - totalVotes - totalVotesOnPage - currentCycle - PreviousCyle
 
-//2. When to update local storage
-// totalViews - totalVotes - totalVotesOnPage
+// //2. When to update local storage
+// // totalViews - totalVotes - totalVotesOnPage
 
 
-function setStateToLocalStorage(){
-  localStorage.setItem(STATE_KEY, JSON.stringify(selectionState));
-}
-
-// function renderVotes(){
-//   counterState.totalVotesOnPage = totalVotesOnPage;
-//   counterState.lastCycleImage = lastCycleImage;
+// function setStateToLocalStorage(){
+//   localStorage.setItem(STATE_KEY, JSON.stringify(selectionState));
 // }
 
-function getStateFromLocalStorage(){
-  if(localStorage[STATE_KEY]){
-    var rawState = localStorage.getItem(STATE_KEY);
-    selectionState = JSON.parse(rawState);
-  }
-}
-setStateToLocalStorage();
-// renderVotes();
+// // function renderVotes(){
+// //   counterState.totalVotesOnPage = totalVotesOnPage;
+// //   counterState.lastCycleImage = lastCycleImage;
+// // }
+
+// function getStateFromLocalStorage(){
+//   if(localStorage[STATE_KEY]){
+//     var rawState = localStorage.getItem(STATE_KEY);
+//     selectionState = JSON.parse(rawState);
+//   }
+// }
+// setStateToLocalStorage();
+// // renderVotes();
