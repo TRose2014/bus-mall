@@ -1,177 +1,217 @@
 'use strict';
 
-var productSrc = [
-  ['./img/bag.jpg', 'Star Wars Luggage', 'bag'],
-  ['./img/banana.jpg', 'Banana Slicer', 'banana'],
-  ['./img/bathroom.jpg', 'Ipad Stand with toilet paper holder', 'bathroom'],
-  ['./img/boots.jpg', 'Boots', 'boots'],
-  ['./img/breakfast.jpg', 'Breakfast', 'breakfast'],
-  ['./img/bubblegum.jpg', 'Bubblegum', 'bubblegum'],
-  ['./img/chair.jpg', 'Chair', 'chair'],
-  ['./img/cthulhu.jpg', 'Cthulhu', 'cthulhu'],
-  ['./img/dog-duck.jpg', 'Dog-Duck', 'dog-duck'],
-  ['./img/dragon.jpg', 'Dragon', 'dragon'],
-  ['./img/pen.jpg', 'Pen', 'pen'],
-  ['./img/pet-sweep.jpg', 'Pet-Sweep', 'pet-sweep'],
-  ['./img/scissors.jpg', 'Scissors', 'scissors'],
-  ['./img/shark.jpg', 'Shark', 'shark'],
-  ['./img/sweep.png', 'Sweep', 'sweep'],
-  ['./img/tauntaun.jpg', 'Tauntaun', 'tauntaun'],
-  ['./img/unicorn.jpg', 'Unicorn', 'unicorn'],
-  ['./img/usb.gif', 'USB', 'usb'],
-  ['./img/water-can.jpg', 'Water-Can', 'water-can'],
-  ['./img/wine-glass.jpg', 'wine-glass', 'wine-glass']
-];
+//Global Variables
 
 var PRODUCTS = {};
-// var product = [];
-var totalVotesOnPage = 0;
-// var totalViews = 0;
-var lastCycleImage = [];
-var currentCycle = [];
-var content = document.getElementById('content');
+var lastPageImages = [ ];
+var totalVotes = 0;
+var totalViews = 0;
+var container = document.getElementById('content');
+var RESULTLABELS = [];
+var RESULTDATAVOTES = [];
+var chartData = [];
 
-function Product(imgSrcPath, name, HTMLid){
-  this.imgSrcPath = imgSrcPath;
+var productSrc = [
+  ['./img/bag.jpg', 'bag', 'bag'],
+  ['./img/banana.jpg', 'banana', 'banana'],
+  ['./img/bathroom.jpg', 'bathroom', 'bathroom'],
+  ['./img/boots.jpg', 'boots', 'boots'],
+  ['./img/breakfast.jpg','breakfast', 'breakfast'],
+  ['./img/bubblegum.jpg', 'bubblegum', 'bubblegum'],
+  ['./img/chair.jpg', 'chair ', 'chair'], 
+  ['./img/cthulhu.jpg', 'cthulhu', 'cthulhu'],
+  ['./img/dog-duck.jpg', 'dog-duc', 'dog-duc'],
+  ['./img/dragon.jpg', 'dragon', 'dragon'],
+  ['./img/pen.jpg', 'pen', 'pen'],
+  ['./img/pet-sweep.jpg', 'pet-sweep', 'pet-sweep'],
+  ['./img/scissors.jpg', 'scissors', 'scissors'],
+  ['./img/shark.jpg', 'shark', 'shark'],
+  ['./img/sweep.png', 'sweep', 'sweep'],
+  ['./img/tauntaun.jpg', 'tauntaun', 'tauntaun'],
+  ['./img/unicorn.jpg', 'unicorn', 'unicorn'],
+  ['./img/usb.gif', 'usb', 'usb'],
+  ['./img/water-can.jpg', 'water-can', 'water-can'],
+  ['./img/wine-glass.jpg', 'wine-glass', 'wine-glass'],
+];
+
+// ---------------------------------------------------------------
+//                   Define Functions
+// -----------------------------------------------------------------
+
+function Product(imgFilePath, name, HTMLid){
+  this.imgFilePath = imgFilePath;
   this.name = name;
-  this.totalVotes = this.totalViews = 0;
   this.HTMLid = HTMLid;
-  // product[this.HTMLid] = this;
+  this.totalVotesOnPage = 0;
+  this.totalViews = 0;
+
   PRODUCTS[this.HTMLid] = this;
 }
 
-Product.prototype.calculatePercentage = function(){
-  return this.totalVotes / this.totalViews;
+Product.prototype.getPercentClicked = function(){
+  return this.totalVotesOnPage / this.totalViews;
 };
-// Product.prototype.render = function(parentId){
-//   var parent = document.getElementById(parentId);
-//   var img = document.getElementById('img');
-//   img.setAttribute('id', this.HTMLid);
-//   img.setAttribute('src', this.imgSrcPath);
-//   img.setAttribute('class', 'product');
-//   parent.appendChild(img);
 
-// };
+Product.prototype.render = function(parentId){
 
+  var parent = document.getElementById(parentId);
+  var img = document.createElement('img');
 
-var getRandomImage = function(){
-  // currentCycle = [];
+  img.setAttribute('id', this.HTMLid);
+  img.setAttribute('src', this.imgFilePath);
+  img.setAttribute('class', 'product');
 
-  while (currentCycle[0] === undefined) {
-    var randomNum = Math.floor(Math.random() * productSrc.length);
+  parent.appendChild(img);
+};
 
-    if(lastCycleImage.includes(randomNum)){
-      getRandomImage();
-    }else if(currentCycle.includes(randomNum)){
-      getRandomImage();
-    }else{
-      currentCycle.push(randomNum);
+function randomlySelectNewImages(){
+  for(var i = 0; i < 3; i++){
+    var randomIndex = getRandom();
+
+    while(lastPageImages.includes(randomIndex)){
+      randomIndex = getRandom();
+    }
+    lastPageImages.push(randomIndex);
+  }
+  
+  if(lastPageImages.length === 6){
+    lastPageImages.shift(); 
+    lastPageImages.shift();
+    lastPageImages.shift();
+  }
+}
+
+function addCurrentSetOfImages(){
+
+  for (var i = 0; i < 3; i++) {
+    if (totalVotes > 1){
+      var parent = document.getElementById(`fig${i}`);
+
+      var child = parent.firstElementChild;
+      if(child){child.remove();}
+
+      var productToRender = lastPageImages[i];
+
+      var newIdName = PRODUCTSARRAY[productToRender].HTMLid;
+      console.log(newIdName);
+      var newImgPath = PRODUCTSARRAY[productToRender].imgFilePath;
+     
+    
+      var newChild = document.createElement('img');
+      newChild.setAttribute('class', 'product');
+      newChild.setAttribute('id', newIdName);
+      newChild.setAttribute('src', newImgPath);
+      parent.appendChild(newChild);
+      addViewsOfProduct();
     }
   }
-  lastCycleImage = currentCycle;
+}
+
+
+function addViewsOfProduct() {
+  for (var i = 0; i < 3; i++){
+    var productIndex = lastPageImages[i];
+  
+    PRODUCTSARRAY[productIndex].totalViews++;
+  
+  }
+}
+
+function stopVoting(){
+
+  if(totalVotes > 25){
+    totalVotes = 0;
+  }
+  if(totalVotes === 25){
+    container.removeEventListener('click', handleClick);
+
+    totalVotes === 0;
+    for( i = 0; i < PRODUCTSARRAY.length; i++) {
+     
+      RESULTDATAVOTES.push(PRODUCTSARRAY[i].totalVotesOnPage);
+      console.log(RESULTDATAVOTES);
+      RESULTLABELS.push(PRODUCTSARRAY[i].name);
+    }
+    resultList();
+    // renderChart();
+  }
+}
+
+//Gets random Index
+var getRandom = function(){
+  return Math.floor(Math.random() * productSrc.length);
 };
 
-
-// //Generating Random Picture and attaching it to the body
-// var getRandomNumber = function(productsArray){
-//   for(var i = 0; i < 3; i++){
-//     return Math.floor(Math.random() * productsArray.length);
-//   }
-// };
-
-// var getRandomImage = function(){
-//   var randomIndex = getRandomNumber(productSrc.length, 0);
-//   var randomImageName = 
-//   console.log(randomIndex);
-// };
-// //   currentCycle.push(productSrc[newImage]);
-// //   console.log(currentCycle);
-// //   var fig = document.getElementById(`fig${i}`);
-// //   // console.log(fig);
-// //   // console.log(currentCycle[0]);
-// //   var img = fig.firstChild;
-
-
-// //   img = document.getElementById(`img${i}`);
-// //   img.setAttribute('src', productSrc[currentCycle[i]]);
-// //   // }
-// //   console.log(currentCycle);
-
-// // };
-
-// // console.log(currentCycle);
-// // console.log(lastCycleImage);
-
-
-//Makes List Visible after so many clicks
+//Displays Ol for results
 var resultList = function(){
-  document.getElementById('resultList').style.visibility = 'visible';
+  var productItem = document.getElementById('result');
+  var productItemOl = document.getElementById('resultList');
+  
+  for(var i = 0; i < productSrc.length; i++){
+    var li = document.createElement('li');
+  
+    li.textContent = `${RESULTDATAVOTES[i]} votes for ${RESULTLABELS[i]}`;
+    productItemOl.appendChild(li);
+
+    productItem.style.visibility = 'visible';
+    productItemOl.style.visibility = 'visible';
+  }
+
   document.getElementById('myChart').style.visibility = 'visible';
 };
 
-var voteForAnImage = function(event){
+console.log(PRODUCTS);
+
+function handleClick(event) {
+ //put eventDefault
+
   if(event.target.className === 'product'){
-    console.log('Done');
-    totalVotesOnPage++;
-    console.log(totalVotesOnPage);
-    // selectionState.totalVotesOnPage = totalVotesOnPage;
-  
-    // displayRandomImage(productSrc);
-    // console.log(displayRandomImage(productSrc));
-    // PRODUCTS[event.target.id].totalVotes++;
-    
-    if(totalVotesOnPage === 5){
-      content.removeEventListener('click', voteForAnImage);
-      console.log(totalVotesOnPage + ' votes completed');
-      resultList();
-    }
+    PRODUCTS[event.target.id].totalVotesOnPage++;
+    console.log(PRODUCTS);
+ 
+    totalVotes++;
+    stopVoting();
+    randomlySelectNewImages();
+    addCurrentSetOfImages(event);
+    // setStateToLocalStorage();
   }
-  // setStateToLocalStorage();
-};
+}
 
-content.addEventListener('click', voteForAnImage);
+function renderChart(){
+  var canvas = document.getElementById('myChart');
+  var ctx = canvas.getContext('2d');
+  var chartLabels = [];
+  var chartData = [];
 
-// displayRandomImage(productSrc);
-// console.log(displayRandomImage(productSrc));
-
-// var getNextImages = function(){
-//   for(var i = 0; i < 4; i++){
-//     var randomIndex = displayRandomImage();
-//     while(lastCycleImage.includes(randomIndex)){
-//       randomIndex = displayRandomImage();
-//     }
-//     lastCycleImage.push(displayRandomImage());
-//   }
-// };
-// if (lastCycleImage > 3){
-//   lastCycleImage.shift()*3;
-// }
-// for(var i = 0; i < productSrc.length; i++){
-//   var randomProduct = new Product(productSrc[i][0], productSrc[i][1], productSrc[i][2]);
-//   randomProduct.render('imgOne');
-// }
-
-
-//---------------------------
-//
-// Chart
-//
-//---------------------------
-
-var ctx = document.getElementById('myChart').getContext('2d');
-var myChart = new Chart(ctx, {
-  type: 'bar',
-  data: {
-    labels: ['Bathroom', 'Shark', 'Unicorn', 'Dragon', 'Pen'],
+  console.log(RESULTDATAVOTES);
+  var data = {
+    labels: RESULTLABELS, //RESULTSLABELS
     datasets: [{
-      label: '# of Votes',
-      data: [3, 4, 2, 5, 1],
+      label: 'Votes by Product',
+      data: RESULTDATAVOTES,
+    
+    
       backgroundColor: [
-        'rgb(255, 150, 132)',
-        'rgb(54, 162, 235)',
-        'rgb(255, 206, 86)',
-        'rgb(75, 192, 192)',
-        'rgb(153, 2, 255)',
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 206, 86, 0.2)',
+        'rgba(75, 192, 192, 0.2)',
+        'rgba(153, 102, 255, 0.2)',
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 206, 86, 0.2)',
+        'rgba(75, 192, 192, 0.2)',
+        'rgba(153, 102, 255, 0.2)',
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 206, 86, 0.2)',
+        'rgba(75, 192, 192, 0.2)',
+        'rgba(153, 102, 255, 0.2)',
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 206, 86, 0.2)',
+        'rgba(75, 192, 192, 0.2)',
+        'rgba(153, 102, 255, 0.2)'
       ],
       borderColor: [
         'rgba(255, 99, 132, 1)',
@@ -179,44 +219,55 @@ var myChart = new Chart(ctx, {
         'rgba(255, 206, 86, 1)',
         'rgba(75, 192, 192, 1)',
         'rgba(153, 102, 255, 1)',
+        'rgba(255, 99, 132, 1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 99, 132, 1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(75, 192, 192, 1)',
+        'rgba(153, 102, 255, 1)',
+        'rgba(255, 99, 132, 1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(75, 192, 192, 1)',
+        'rgba(153, 102, 255, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(75, 192, 192, 1)',
+        'rgba(255, 159, 64, 1)'
       ],
-      borderWidth: 1
+    }],
+  };
+  var options = {
+    backgroundColor: 'rgb(64, 211, 191)',
+    borderColor: 'rgb(46, 146, 133)',
+    pointBackgroundColor: 'rgb(46, 135, 100)'
+  };
+  var myChartConfig = {
+    type: 'bar',
+    data: data,
+    options: options
+  };
+  
+  var barChart = new Chart(ctx, myChartConfig);
+}
 
-    }]
-  },
-});
-
-//-------------
-//JSON
-//-------------
-
-// var STATE_KEY = 'voteState';
-// var selectionState = {
-//   totalVotesOnPage: 0,
-//   // lastCycleImage: [],
-//   currentCycle: [],
-// };
-// // 1. What to put in local storage
-// // totalViews - totalVotes - totalVotesOnPage - currentCycle - PreviousCyle
-
-// //2. When to update local storage
-// // totalViews - totalVotes - totalVotesOnPage
+// --------------------------------------------------------------
+//                        Run Script
+// --------------------------------------------------------------
 
 
-// function setStateToLocalStorage(){
-//   localStorage.setItem(STATE_KEY, JSON.stringify(selectionState));
-// }
+// Generate Objects for Products
+for(var i = 0; i < productSrc.length; i++){
+  new Product(productSrc[i][0], productSrc[i][1], productSrc[i][2]);
+}
 
-// // function renderVotes(){
-// //   counterState.totalVotesOnPage = totalVotesOnPage;
-// //   counterState.lastCycleImage = lastCycleImage;
-// // }
+randomlySelectNewImages();
+addCurrentSetOfImages();
 
-// function getStateFromLocalStorage(){
-//   if(localStorage[STATE_KEY]){
-//     var rawState = localStorage.getItem(STATE_KEY);
-//     selectionState = JSON.parse(rawState);
-//   }
-// }
-// setStateToLocalStorage();
-// // renderVotes();
+console.log(RESULTDATAVOTES);
+
+
+container.addEventListener('click', handleClick);
+console.log(PRODUCTS);
+
+var PRODUCTSARRAY = Object.values(PRODUCTS);
