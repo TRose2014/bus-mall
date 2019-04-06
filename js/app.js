@@ -85,13 +85,17 @@ content.addEventListener('click', voteForAnImage);
 
 //Generating Random Picture and attaching it to the body
 var displayRandomImage = function(productsArray){
-  var newImage = Math.floor(Math.random() * productsArray.length);
-  console.log(newImage);
-  // };
+  for(var i = 0; i < 3; i++){
+    var newImage = Math.floor(Math.random() * productsArray.length);
+    var randomImage = productsArray[newImage];
+    console.log(randomImage);
+    lastCycleImage.push(randomImage[0]);
+    console.log(newImage);
+  }
 
   //   //stackoverflow - https://stackoverflow.com/questions/14004318/show-random-image-from-array-in-javascript
-  var randomImage = productsArray[newImage];
-  lastCycleImage.push(randomImage[0]);
+  // var randomImage = productsArray[newImage];
+  // lastCycleImage.push(randomImage[0]);
 
   console.log(lastCycleImage);
   //create empty array, push randomimage path into an array and use array.protoype find to get the index number
@@ -112,8 +116,6 @@ var displayRandomImage = function(productsArray){
   selectionState.lastCycleImage = lastCycleImage;
 
 };
-
-// displayRandomImage(productSrc);
 
 // var getNextImages = function(){
 //   for(var i = 0; i < 4; i++){
