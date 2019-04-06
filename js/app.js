@@ -67,7 +67,7 @@ var voteForAnImage = function(event){
     // console.log('Done');
     totalVotesOnPage++;
     console.log(totalVotesOnPage);
-    selectionState.totalVotesOnPage = totalVotesOnPage;
+    // selectionState.totalVotesOnPage = totalVotesOnPage;
   
     displayRandomImage(productSrc);
     // PRODUCTS[event.target.id].totalVotes++;
@@ -78,54 +78,75 @@ var voteForAnImage = function(event){
       resultList();
     }
   }
+
   setStateToLocalStorage();
 };
 
 content.addEventListener('click', voteForAnImage);
 
 //Generating Random Picture and attaching it to the body
-var displayRandomImage = function(productsArray){
+var displayRandomImage = function(){
   for(var i = 0; i < 3; i++){
-    var newImage = Math.floor(Math.random() * productsArray.length);
-    var randomImage = productsArray[newImage];
+    var newImage = Math.floor(Math.random() * productSrc.length);
+    var randomImage = productSrc[newImage];
     console.log(randomImage);
     lastCycleImage.push(randomImage[0]);
     console.log(newImage);
+
+    var randomIndex = displayRandomImage();
+    while(lastCycleImage.includes(randomIndex)){
+      randomIndex = displayRandomImage();
+    }
+    lastCycleImage.push(displayRandomImage());
+  }
+};
+
+getNextImages();
+console.log(getNextImages());
+// if (lastCycleImage > 3){
+//   lastCycleImage.shift()*3;
+// }
   }
 
-  //   //stackoverflow - https://stackoverflow.com/questions/14004318/show-random-image-from-array-in-javascript
-  // var randomImage = productsArray[newImage];
-  // lastCycleImage.push(randomImage[0]);
+//   //   //stackoverflow - https://stackoverflow.com/questions/14004318/show-random-image-from-array-in-javascript
+//   // var randomImage = productsArray[newImage];
+//   // lastCycleImage.push(randomImage[0]);
 
-  console.log(lastCycleImage);
-  //create empty array, push randomimage path into an array and use array.protoype find to get the index number
+//   console.log(lastCycleImage);
+//   //create empty array, push randomimage path into an array and use array.protoype find to get the index number
 
-  //have img paths being pushed into empty array one by one until it hits 5
-  //use function to shift 3 images out of array. Still need to have images appear at the same time
+//   //have img paths being pushed into empty array one by one until it hits 5
+//   //use function to shift 3 images out of array. Still need to have images appear at the same time
   
-  var imageOne = document.getElementById('imgOne');
-  imageOne.setAttribute('src', lastCycleImage[0]);
+//   var fig = document.getElementById(`fig${i}`);
 
-  var imageTwo = document.getElementById('imgTwo');
-  imageTwo.setAttribute('src', lastCycleImage[1]);
 
-  var imageThree = document.getElementById('imgThree');
-  imageThree.setAttribute('src', lastCycleImage[2]);
+//   var imageOne = document.getElementById('imgOne');
+//   imageOne.setAttribute('src', lastCycleImage[0]);
 
-  selectionState.currentCycle = currentCycle;
-  selectionState.lastCycleImage = lastCycleImage;
+//   var imageTwo = document.getElementById('imgTwo');
+//   imageTwo.setAttribute('src', lastCycleImage[1]);
+
+//   var imageThree = document.getElementById('imgThree');
+//   imageThree.setAttribute('src', lastCycleImage[2]);
+
+//   // selectionState.currentCycle = currentCycle;
+//   // selectionState.lastCycleImage = lastCycleImage;
 
 };
 
-// var getNextImages = function(){
-//   for(var i = 0; i < 4; i++){
-//     var randomIndex = displayRandomImage();
-//     while(lastCycleImage.includes(randomIndex)){
-//       randomIndex = displayRandomImage();
-//     }
-//     lastCycleImage.push(displayRandomImage());
-//   }
-// };
+var getNextImages = function(){
+  for(var i = 0; i < 3; i++){
+    var randomIndex = displayRandomImage();
+    while(lastCycleImage.includes(randomIndex)){
+      randomIndex = displayRandomImage();
+    }
+    lastCycleImage.push(displayRandomImage());
+  }
+};
+
+getNextImages();
+console.log(getNextImages());
 // if (lastCycleImage > 3){
 //   lastCycleImage.shift()*3;
 // }
