@@ -64,6 +64,7 @@ Product.prototype.render = function(parentId){
   parent.appendChild(img);
 };
 
+
 function randomlySelectNewImages(){
   for(var i = 0; i < 3; i++){
     var randomIndex = getRandom();
@@ -91,9 +92,9 @@ function addCurrentSetOfImages(){
       if(child){child.remove();}
 
       var productToRender = lastPageImages[i];
+    
 
       var newIdName = PRODUCTSARRAY[productToRender].HTMLid;
-      console.log(newIdName);
       var newImgPath = PRODUCTSARRAY[productToRender].imgFilePath;
      
     
@@ -106,6 +107,16 @@ function addCurrentSetOfImages(){
     }
   }
 }
+
+var createProducts = function(){
+  // Generate Objects for Products
+  for(var i = 0; i < productSrc.length; i++){
+    new Product(productSrc[i][0], productSrc[i][1], productSrc[i][2]);
+  }
+};
+
+createProducts();
+
 
 
 function addViewsOfProduct() {
@@ -126,9 +137,10 @@ function stopVoting(){
     container.removeEventListener('click', handleClick);
 
     totalVotes === 0;
-    for( i = 0; i < PRODUCTSARRAY.length; i++) {
+    for( var i = 0; i < PRODUCTSARRAY.length; i++) {
      
       RESULTDATAVOTES.push(PRODUCTSARRAY[i].totalVotesOnPage);
+      console.log(PRODUCTSARRAY);
       console.log(RESULTDATAVOTES);
       RESULTLABELS.push(PRODUCTSARRAY[i].name);
     }
@@ -136,6 +148,7 @@ function stopVoting(){
     // renderChart();
   }
 }
+
 
 //Gets random Index
 var getRandom = function(){
@@ -161,21 +174,26 @@ var resultList = function(){
 };
 
 console.log(PRODUCTS);
+var PRODUCTSARRAY = Object.values(PRODUCTS);
+console.log(PRODUCTSARRAY);
 
-function handleClick(event) {
- //put eventDefault
+// function handleClick(event) {
+//   //put eventDefault
 
-  if(event.target.className === 'product'){
-    PRODUCTS[event.target.id].totalVotesOnPage++;
-    console.log(PRODUCTS);
+//   if(event.target.className === 'product'){
+//     console.log(PRODUCTS[event.target.id]);
+//     PRODUCTS[event.target.id].totalVotesOnPage++;
  
-    totalVotes++;
-    stopVoting();
-    randomlySelectNewImages();
-    addCurrentSetOfImages(event);
-    // setStateToLocalStorage();
-  }
-}
+//     totalVotes++;
+//     stopVoting();
+//     randomlySelectNewImages();
+//     addCurrentSetOfImages(event);
+//     // setStateToLocalStorage();
+//   }
+// }
+
+
+console.log(PRODUCTS);
 
 function renderChart(){
   var canvas = document.getElementById('myChart');
@@ -251,23 +269,50 @@ function renderChart(){
   var barChart = new Chart(ctx, myChartConfig);
 }
 
+console.log(PRODUCTS);
+
+function handleClick(event) {
+  //put eventDefault
+
+  if(event.target.className === 'product'){
+    console.log([event.target.id]);
+    // PRODUCTS[event.target.id].totalVotesOnPage++;
+    console.log(event.target.id);
+ 
+    totalVotes++;
+    stopVoting();
+    randomlySelectNewImages();
+    addCurrentSetOfImages(event);
+    // setStateToLocalStorage();
+  }
+}
+
 // --------------------------------------------------------------
 //                        Run Script
 // --------------------------------------------------------------
 
 
+var createProducts = function(){
 // Generate Objects for Products
-for(var i = 0; i < productSrc.length; i++){
-  new Product(productSrc[i][0], productSrc[i][1], productSrc[i][2]);
-}
+  for(var i = 0; i < productSrc.length; i++){
+    new Product(productSrc[i][0], productSrc[i][1], productSrc[i][2]);
+  }
+};
 
-randomlySelectNewImages();
-addCurrentSetOfImages();
+var doEverything = function(){
+  randomlySelectNewImages();
+  addCurrentSetOfImages();
+  // createProducts();
+};
+
+doEverything();
+
 
 console.log(RESULTDATAVOTES);
-
 
 container.addEventListener('click', handleClick);
 console.log(PRODUCTS);
 
-var PRODUCTSARRAY = Object.values(PRODUCTS);
+// var PRODUCTSARRAY = Object.values(PRODUCTS);
+
+
