@@ -29,6 +29,7 @@ var totalVotesOnPage = 0;
 // var totalViews = 0;
 var lastCycleImage = [];
 var currentCycle = [];
+var content = document.getElementById('content');
 
 function Product(imgSrcPath, name, HTMLid){
   this.imgSrcPath = imgSrcPath;
@@ -42,15 +43,64 @@ function Product(imgSrcPath, name, HTMLid){
 Product.prototype.calculatePercentage = function(){
   return this.totalVotes / this.totalViews;
 };
-Product.prototype.render = function(parentId){
-  var parent = document.getElementById(parentId);
-  var img = document.getElementById('img');
-  img.setAttribute('id', this.HTMLid);
-  img.setAttribute('src', this.imgSrcPath);
-  img.setAttribute('class', 'product');
-  parent.appendChild(img);
+// Product.prototype.render = function(parentId){
+//   var parent = document.getElementById(parentId);
+//   var img = document.getElementById('img');
+//   img.setAttribute('id', this.HTMLid);
+//   img.setAttribute('src', this.imgSrcPath);
+//   img.setAttribute('class', 'product');
+//   parent.appendChild(img);
 
+// };
+
+
+var getRandomImage = function(){
+  // currentCycle = [];
+
+  while (currentCycle[0] === undefined) {
+    var randomNum = Math.floor(Math.random() * productSrc.length);
+
+    if(lastCycleImage.includes(randomNum)){
+      getRandomImage();
+    }else if(currentCycle.includes(randomNum)){
+      getRandomImage();
+    }else{
+      currentCycle.push(randomNum);
+    }
+  }
+  lastCycleImage = currentCycle;
 };
+
+
+// //Generating Random Picture and attaching it to the body
+// var getRandomNumber = function(productsArray){
+//   for(var i = 0; i < 3; i++){
+//     return Math.floor(Math.random() * productsArray.length);
+//   }
+// };
+
+// var getRandomImage = function(){
+//   var randomIndex = getRandomNumber(productSrc.length, 0);
+//   var randomImageName = 
+//   console.log(randomIndex);
+// };
+// //   currentCycle.push(productSrc[newImage]);
+// //   console.log(currentCycle);
+// //   var fig = document.getElementById(`fig${i}`);
+// //   // console.log(fig);
+// //   // console.log(currentCycle[0]);
+// //   var img = fig.firstChild;
+
+
+// //   img = document.getElementById(`img${i}`);
+// //   img.setAttribute('src', productSrc[currentCycle[i]]);
+// //   // }
+// //   console.log(currentCycle);
+
+// // };
+
+// // console.log(currentCycle);
+// // console.log(lastCycleImage);
 
 
 //Makes List Visible after so many clicks
@@ -59,18 +109,15 @@ var resultList = function(){
   document.getElementById('myChart').style.visibility = 'visible';
 };
 
-
-var content = document.getElementById('content');
-
 var voteForAnImage = function(event){
   if(event.target.className === 'product'){
-    // console.log('Done');
+    console.log('Done');
     totalVotesOnPage++;
     console.log(totalVotesOnPage);
     // selectionState.totalVotesOnPage = totalVotesOnPage;
   
-    displayRandomImage(productSrc);
-    console.log(displayRandomImage(productSrc));
+    // displayRandomImage(productSrc);
+    // console.log(displayRandomImage(productSrc));
     // PRODUCTS[event.target.id].totalVotes++;
     
     if(totalVotesOnPage === 5){
@@ -84,49 +131,8 @@ var voteForAnImage = function(event){
 
 content.addEventListener('click', voteForAnImage);
 
-//Generating Random Picture and attaching it to the body
-var displayRandomImage = function(productsArray){
-  var newImage = Math.floor(Math.random() * productsArray.length);
-  console.log(newImage);
-  // };
-
-  //   //stackoverflow - https://stackoverflow.com/questions/14004318/show-random-image-from-array-in-javascript
-  var randomImage = productsArray[newImage];
-  lastCycleImage.push(randomImage[0]);
-
-  console.log(lastCycleImage);
-  //create empty array, push randomimage path into an array and use array.protoype find to get the index number
-
-  //have img paths being pushed into empty array one by one until it hits 5
-  //use function to shift 3 images out of array. Still need to have images appear at the same time
-  
-
-  //grab the containter. add its first child and then change the img child src and id etc.
-  var figOne = document.getElementById('fig1');
-  var img = figOne.firstChild;
-
-  img = document.getElementById('img1');
-  img.setAttribute('src', lastCycleImage[0]);
-
-
-  var figTwo = document.getElementById('fig2');
-  var imgTwo = figTwo.firstChild;
-
-  imgTwo = document.getElementById('img2');
-  imgTwo.setAttribute('src', lastCycleImage[1]);
-
-  var imageThree = document.getElementById('img3');
-  imageThree.setAttribute('src', lastCycleImage[2]);
-
-  // selectionState.currentCycle = currentCycle;
-  // selectionState.lastCycleImage = lastCycleImage;
-
-};
-
-console.log(lastCycleImage);
-console.log(displayRandomImage(productSrc));
-
 // displayRandomImage(productSrc);
+// console.log(displayRandomImage(productSrc));
 
 // var getNextImages = function(){
 //   for(var i = 0; i < 4; i++){
@@ -144,6 +150,7 @@ console.log(displayRandomImage(productSrc));
 //   var randomProduct = new Product(productSrc[i][0], productSrc[i][1], productSrc[i][2]);
 //   randomProduct.render('imgOne');
 // }
+
 
 //---------------------------
 //

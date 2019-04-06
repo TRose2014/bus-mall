@@ -19,18 +19,18 @@ header{
     height: 100%;
 }
 
-#fig1{
+#fig0{
     grid-column-start: 1;
     grid-column-end: 5;
 
 }
 
-#fig2{
+#fig1{
     grid-column-start: 5;
     grid-column-end: 9;
 }
 
-#fig3{
+#fig2{
     grid-column-start: 9;
     grid-column-end: 13;
 
