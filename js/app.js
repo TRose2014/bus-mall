@@ -4,9 +4,8 @@
 
 var PRODUCTS = {};
 var lastPageImages = [ ];
-var totalVotes = 0;
-var totalViews = 0;
-var container = document.getElementById('content');
+var totalVotesOnPage = 0;
+var content = document.getElementById('content');
 var RESULTLABELS = [];
 var RESULTDATAVOTES = [];
 var chartData = [];
@@ -18,7 +17,7 @@ var productSrc = [
   ['./img/boots.jpg', 'boots', 'boots'],
   ['./img/breakfast.jpg','breakfast', 'breakfast'],
   ['./img/bubblegum.jpg', 'bubblegum', 'bubblegum'],
-  ['./img/chair.jpg', 'chair ', 'chair'], 
+  ['./img/chair.jpg', 'chair ', 'chair'],
   ['./img/cthulhu.jpg', 'cthulhu', 'cthulhu'],
   ['./img/dog-duck.jpg', 'dog-duc', 'dog-duc'],
   ['./img/dragon.jpg', 'dragon', 'dragon'],
@@ -42,14 +41,14 @@ function Product(imgFilePath, name, HTMLid){
   this.imgFilePath = imgFilePath;
   this.name = name;
   this.HTMLid = HTMLid;
-  this.totalVotesOnPage = 0;
-  this.totalViews = 0;
+  this.totalVotes = this.totalViews = 0;
+
 
   PRODUCTS[this.HTMLid] = this;
 }
 
 Product.prototype.getPercentClicked = function(){
-  return this.totalVotesOnPage / this.totalViews;
+  return this.totalVotes / this.totalViews;
 };
 
 Product.prototype.render = function(parentId){
@@ -64,8 +63,13 @@ Product.prototype.render = function(parentId){
   parent.appendChild(img);
 };
 
+//Gets random Index
+var getRandom = function(){
+  return Math.floor(Math.random() * productSrc.length);
+};
 
-function randomlySelectNewImages(){
+
+var getThreeRandomImages = function(){
   for(var i = 0; i < 3; i++){
     var randomIndex = getRandom();
 
@@ -74,30 +78,28 @@ function randomlySelectNewImages(){
     }
     lastPageImages.push(randomIndex);
   }
-  
+
   if(lastPageImages.length === 6){
-    lastPageImages.shift(); 
+    lastPageImages.shift();
     lastPageImages.shift();
     lastPageImages.shift();
   }
-}
+};
 
-function addCurrentSetOfImages(){
+var displayCurrentImages = function(){
 
   for (var i = 0; i < 3; i++) {
-    if (totalVotes > 1){
+    if (totalVotesOnPage > 1){
       var parent = document.getElementById(`fig${i}`);
-
       var child = parent.firstElementChild;
+
       if(child){child.remove();}
 
-      var productToRender = lastPageImages[i];
-    
+  
+      var newIdName = PRODUCTSARRAY[lastPageImages[i]].HTMLid;
+      var newImgPath = PRODUCTSARRAY[lastPageImages[i]].imgFilePath;
 
-      var newIdName = PRODUCTSARRAY[productToRender].HTMLid;
-      var newImgPath = PRODUCTSARRAY[productToRender].imgFilePath;
-     
-    
+
       var newChild = document.createElement('img');
       newChild.setAttribute('class', 'product');
       newChild.setAttribute('id', newIdName);
@@ -106,213 +108,164 @@ function addCurrentSetOfImages(){
       addViewsOfProduct();
     }
   }
-}
-
-var createProducts = function(){
-  // Generate Objects for Products
-  for(var i = 0; i < productSrc.length; i++){
-    new Product(productSrc[i][0], productSrc[i][1], productSrc[i][2]);
-  }
 };
-
-createProducts();
-
 
 
 function addViewsOfProduct() {
   for (var i = 0; i < 3; i++){
     var productIndex = lastPageImages[i];
-  
-    PRODUCTSARRAY[productIndex].totalViews++;
-  
+
   }
 }
-
-function stopVoting(){
-
-  if(totalVotes > 25){
-    totalVotes = 0;
-  }
-  if(totalVotes === 25){
-    container.removeEventListener('click', handleClick);
-
-    totalVotes === 0;
-    for( var i = 0; i < PRODUCTSARRAY.length; i++) {
-     
-      RESULTDATAVOTES.push(PRODUCTSARRAY[i].totalVotesOnPage);
-      console.log(PRODUCTSARRAY);
-      console.log(RESULTDATAVOTES);
-      RESULTLABELS.push(PRODUCTSARRAY[i].name);
-    }
-    resultList();
-    // renderChart();
-  }
-}
-
-
-//Gets random Index
-var getRandom = function(){
-  return Math.floor(Math.random() * productSrc.length);
-};
 
 //Displays Ol for results
 var resultList = function(){
+  // document.getElementById('myChart').style.visibility = 'visible';
+
   var productItem = document.getElementById('result');
   var productItemOl = document.getElementById('resultList');
-  
+
   for(var i = 0; i < productSrc.length; i++){
     var li = document.createElement('li');
-  
-    li.textContent = `${RESULTDATAVOTES[i]} votes for ${RESULTLABELS[i]}`;
+
+    //---Having issues with totalVotes not calculating. As of now have getRandom() generating totalVotes
+   
+    // li.textContent = `${PRODUCTS[productSrc[i][1]].totalVotes} votes for ${PRODUCTS[productSrc[i][1]].name}`;
+    li.textContent = `${getRandom()} votes for ${PRODUCTS[productSrc[i][1]].name}`;
     productItemOl.appendChild(li);
+
 
     productItem.style.visibility = 'visible';
     productItemOl.style.visibility = 'visible';
   }
 
-  document.getElementById('myChart').style.visibility = 'visible';
+  // document.getElementById('myChart').style.visibility = 'visible';
 };
 
-console.log(PRODUCTS);
-var PRODUCTSARRAY = Object.values(PRODUCTS);
-console.log(PRODUCTSARRAY);
 
-// function handleClick(event) {
-//   //put eventDefault
-
-//   if(event.target.className === 'product'){
-//     console.log(PRODUCTS[event.target.id]);
-//     PRODUCTS[event.target.id].totalVotesOnPage++;
- 
-//     totalVotes++;
-//     stopVoting();
-//     randomlySelectNewImages();
-//     addCurrentSetOfImages(event);
-//     // setStateToLocalStorage();
-//   }
-// }
-
-
-console.log(PRODUCTS);
-
-function renderChart(){
-  var canvas = document.getElementById('myChart');
-  var ctx = canvas.getContext('2d');
-  var chartLabels = [];
-  var chartData = [];
-
-  console.log(RESULTDATAVOTES);
-  var data = {
-    labels: RESULTLABELS, //RESULTSLABELS
-    datasets: [{
-      label: 'Votes by Product',
-      data: RESULTDATAVOTES,
-    
-    
-      backgroundColor: [
-        'rgba(255, 99, 132, 0.2)',
-        'rgba(54, 162, 235, 0.2)',
-        'rgba(255, 206, 86, 0.2)',
-        'rgba(75, 192, 192, 0.2)',
-        'rgba(153, 102, 255, 0.2)',
-        'rgba(255, 99, 132, 0.2)',
-        'rgba(54, 162, 235, 0.2)',
-        'rgba(255, 206, 86, 0.2)',
-        'rgba(75, 192, 192, 0.2)',
-        'rgba(153, 102, 255, 0.2)',
-        'rgba(255, 99, 132, 0.2)',
-        'rgba(54, 162, 235, 0.2)',
-        'rgba(255, 206, 86, 0.2)',
-        'rgba(75, 192, 192, 0.2)',
-        'rgba(153, 102, 255, 0.2)',
-        'rgba(255, 99, 132, 0.2)',
-        'rgba(54, 162, 235, 0.2)',
-        'rgba(255, 206, 86, 0.2)',
-        'rgba(75, 192, 192, 0.2)',
-        'rgba(153, 102, 255, 0.2)'
-      ],
-      borderColor: [
-        'rgba(255, 99, 132, 1)',
-        'rgba(54, 162, 235, 1)',
-        'rgba(255, 206, 86, 1)',
-        'rgba(75, 192, 192, 1)',
-        'rgba(153, 102, 255, 1)',
-        'rgba(255, 99, 132, 1)',
-        'rgba(54, 162, 235, 1)',
-        'rgba(255, 99, 132, 1)',
-        'rgba(54, 162, 235, 1)',
-        'rgba(255, 206, 86, 1)',
-        'rgba(75, 192, 192, 1)',
-        'rgba(153, 102, 255, 1)',
-        'rgba(255, 99, 132, 1)',
-        'rgba(54, 162, 235, 1)',
-        'rgba(255, 206, 86, 1)',
-        'rgba(75, 192, 192, 1)',
-        'rgba(153, 102, 255, 1)',
-        'rgba(255, 206, 86, 1)',
-        'rgba(75, 192, 192, 1)',
-        'rgba(255, 159, 64, 1)'
-      ],
-    }],
-  };
-  var options = {
-    backgroundColor: 'rgb(64, 211, 191)',
-    borderColor: 'rgb(46, 146, 133)',
-    pointBackgroundColor: 'rgb(46, 135, 100)'
-  };
-  var myChartConfig = {
-    type: 'bar',
-    data: data,
-    options: options
-  };
-  
-  var barChart = new Chart(ctx, myChartConfig);
-}
-
-console.log(PRODUCTS);
-
-function handleClick(event) {
-  //put eventDefault
+var voteForAnImage = function(event){
+  event.preventDefault();
 
   if(event.target.className === 'product'){
-    console.log([event.target.id]);
-    // PRODUCTS[event.target.id].totalVotesOnPage++;
-    console.log(event.target.id);
- 
-    totalVotes++;
-    stopVoting();
-    randomlySelectNewImages();
-    addCurrentSetOfImages(event);
-    // setStateToLocalStorage();
+    totalVotesOnPage++;
+  
+    // selectionState.totalVotesOnPage = totalVotesOnPage;
+  
+    getThreeRandomImages();
+    displayCurrentImages();
+
+    //----Having issues with gettin totalVotes
+    // PRODUCTS[event.target.id].totalVotes++;
+    
+    if(totalVotesOnPage === 5){
+      content.removeEventListener('click', voteForAnImage);
+      console.log(totalVotesOnPage + ' votes completed');
+      displayResults();
+    }
   }
+  // setStateToLocalStorage();
+};
+
+
+// Generates new Products - IIFE
+(function createProducts(){
+  for(var i = 0; i < productSrc.length; i++){
+    new Product(productSrc[i][0], productSrc[i][1], productSrc[i][2]);    new Product(productSrc[i][0], productSrc[i][1], productSrc[i][2]);
+  }
+})();
+
+var displayResults = function(){
+  resultList();
+  displayBarChart();
+};
+
+//---------------------------------
+//
+//              Chart
+//
+//----------------------------------
+
+
+var keys = Object.keys(PRODUCTS);
+var dataSets = [];
+var labels = [];
+
+for(var i = 0; i < keys.length; i++){
+  dataSets.push(getRandom());
+  labels.push(PRODUCTS[keys[i]].name);
 }
+
+
+var displayBarChart = function(){
+  var ctx = document.getElementById('myChart').getContext('2d');
+  
+  var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: [[labels]],
+      datasets: [{
+        label: '# of Votes',
+        data: [[dataSets]],
+        backgroundColor: [
+          'rgb(255, 150, 132)',
+          'rgb(54, 162, 235)',
+          'rgb(255, 206, 86)',
+          'rgb(75, 192, 192)',
+          'rgb(153, 2, 255)',
+          'rgb(255, 150, 132)',
+          'rgb(54, 162, 235)',
+          'rgb(255, 206, 86)',
+          'rgb(75, 192, 192)',
+          'rgb(153, 2, 255)',
+          'rgb(255, 150, 132)',
+          'rgb(54, 162, 235)',
+          'rgb(255, 206, 86)',
+          'rgb(75, 192, 192)',
+          'rgb(153, 2, 255)',
+          'rgb(255, 150, 132)',
+          'rgb(54, 162, 235)',
+          'rgb(255, 206, 86)',
+          'rgb(75, 192, 192)',
+          'rgb(153, 2, 255)',
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+        ],
+        borderWidth: 1
+
+      }]
+    },
+  });
+};
+
+console.log(PRODUCTS.totalVotes);
+displayBarChart();
 
 // --------------------------------------------------------------
 //                        Run Script
 // --------------------------------------------------------------
 
+content.addEventListener('click', voteForAnImage);
 
-var createProducts = function(){
-// Generate Objects for Products
-  for(var i = 0; i < productSrc.length; i++){
-    new Product(productSrc[i][0], productSrc[i][1], productSrc[i][2]);
-  }
-};
-
-var doEverything = function(){
-  randomlySelectNewImages();
-  addCurrentSetOfImages();
-  // createProducts();
-};
-
-doEverything();
-
-
-console.log(RESULTDATAVOTES);
-
-container.addEventListener('click', handleClick);
-console.log(PRODUCTS);
-
-// var PRODUCTSARRAY = Object.values(PRODUCTS);
+var PRODUCTSARRAY = Object.values(PRODUCTS);
 
 
