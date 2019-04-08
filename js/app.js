@@ -1,225 +1,278 @@
 'use strict';
 
+var PRODUCTS = {};
+var lastPageImages = [ ];
+var totalVotesOnPage = 0;
+var content = document.getElementById('content');
+
 var productSrc = [
-  ['./img/bag.jpg', 'Star Wars Luggage', 'bag'],
-  ['./img/banana.jpg', 'Banana Slicer', 'banana'],
-  ['./img/bathroom.jpg', 'Ipad Stand with toilet paper holder', 'bathroom'],
-  ['./img/boots.jpg', 'Boots', 'boots'],
-  ['./img/breakfast.jpg', 'Breakfast', 'breakfast'],
-  ['./img/bubblegum.jpg', 'Bubblegum', 'bubblegum'],
-  ['./img/chair.jpg', 'Chair', 'chair'],
-  ['./img/cthulhu.jpg', 'Cthulhu', 'cthulhu'],
-  ['./img/dog-duck.jpg', 'Dog-Duck', 'dog-duck'],
-  ['./img/dragon.jpg', 'Dragon', 'dragon'],
-  ['./img/pen.jpg', 'Pen', 'pen'],
-  ['./img/pet-sweep.jpg', 'Pet-Sweep', 'pet-sweep'],
-  ['./img/scissors.jpg', 'Scissors', 'scissors'],
-  ['./img/shark.jpg', 'Shark', 'shark'],
-  ['./img/sweep.png', 'Sweep', 'sweep'],
-  ['./img/tauntaun.jpg', 'Tauntaun', 'tauntaun'],
-  ['./img/unicorn.jpg', 'Unicorn', 'unicorn'],
-  ['./img/usb.gif', 'USB', 'usb'],
-  ['./img/water-can.jpg', 'Water-Can', 'water-can'],
-  ['./img/wine-glass.jpg', 'wine-glass', 'wine-glass']
+  ['./img/bag.jpg', 'bag', 'bag'],
+  ['./img/banana.jpg', 'banana', 'banana'],
+  ['./img/bathroom.jpg', 'bathroom', 'bathroom'],
+  ['./img/boots.jpg', 'boots', 'boots'],
+  ['./img/breakfast.jpg','breakfast', 'breakfast'],
+  ['./img/bubblegum.jpg', 'bubblegum', 'bubblegum'],
+  ['./img/chair.jpg', 'chair', 'chair'],
+  ['./img/cthulhu.jpg', 'cthulhu', 'cthulhu'],
+  ['./img/dog-duck.jpg', 'dog-duc', 'dog-duc'],
+  ['./img/dragon.jpg', 'dragon', 'dragon'],
+  ['./img/pen.jpg', 'pen', 'pen'],
+  ['./img/pet-sweep.jpg', 'pet-sweep', 'pet-sweep'],
+  ['./img/scissors.jpg', 'scissors', 'scissors'],
+  ['./img/shark.jpg', 'shark', 'shark'],
+  ['./img/sweep.png', 'sweep', 'sweep'],
+  ['./img/tauntaun.jpg', 'tauntaun', 'tauntaun'],
+  ['./img/unicorn.jpg', 'unicorn', 'unicorn'],
+  ['./img/usb.gif', 'usb', 'usb'],
+  ['./img/water-can.jpg', 'water-can', 'water-can'],
+  ['./img/wine-glass.jpg', 'wine-glass', 'wine-glass'],
 ];
 
-var PRODUCTS = {};
-// var product = [];
-var totalVotesOnPage = 0;
-// var totalViews = 0;
-var lastCycleImage = [];
-var currentCycle = [];
+// ---------------------------------------------------------------
+//                   Define Functions
+// -----------------------------------------------------------------
 
-function Product(imgSrcPath, name, HTMLid){
-  this.imgSrcPath = imgSrcPath;
+//-----------------------
+//Constructor Function
+//-----------------------
+function Product(imgFilePath, name, HTMLid){
+  this.imgFilePath = imgFilePath;
   this.name = name;
-  this.totalVotes = this.totalViews = 0;
   this.HTMLid = HTMLid;
-  // product[this.HTMLid] = this;
+  this.totalVotes = this.totalViews = 0;
   PRODUCTS[this.HTMLid] = this;
 }
 
-Product.prototype.calculatePercentage = function(){
+Product.prototype.getPercentClicked = function(){
   return this.totalVotes / this.totalViews;
 };
 Product.prototype.render = function(parentId){
   var parent = document.getElementById(parentId);
-  var img = document.getElementById('img');
+  var img = document.createElement('img');
+
   img.setAttribute('id', this.HTMLid);
-  img.setAttribute('src', this.imgSrcPath);
+  img.setAttribute('src', this.imgFilePath);
   img.setAttribute('class', 'product');
+
   parent.appendChild(img);
-
 };
 
-
-//Makes List Visible after so many clicks
-var resultList = function(){
-  document.getElementById('resultList').style.visibility = 'visible';
-  document.getElementById('myChart').style.visibility = 'visible';
+//-----------------------
+//Gets Random Index
+//-----------------------
+var getRandom = function(){
+  return Math.floor(Math.random() * productSrc.length);
 };
 
+//-----------------------------
+//Gets Three Random Images
+//-----------------------------
+var getThreeRandomImages = function(){
+  for(var i = 0; i < 3; i++){
+    var randomIndex = getRandom();
 
-var content = document.getElementById('content');
-
-var voteForAnImage = function(event){
-  if(event.target.className === 'product'){
-    // console.log('Done');
-    totalVotesOnPage++;
-    console.log(totalVotesOnPage);
-    // selectionState.totalVotesOnPage = totalVotesOnPage;
-  
-    displayRandomImage(productSrc);
-    // PRODUCTS[event.target.id].totalVotes++;
-    
-    if(totalVotesOnPage === 5){
-      content.removeEventListener('click', voteForAnImage);
-      console.log(totalVotesOnPage + ' votes completed');
-      resultList();
+    while(lastPageImages.includes(randomIndex)){
+      randomIndex = getRandom();
     }
+    lastPageImages.push(randomIndex);
   }
 
-  setStateToLocalStorage();
+  if(lastPageImages.length > 3){
+    lastPageImages.shift();
+    lastPageImages.shift();
+    lastPageImages.shift();
+  }
 };
+
+//-----------------------
+//Display Images
+//-----------------------
+var displayCurrentImages = function(){
+
+  for (var i = 0; i < 3; i++) {
+    if (totalVotesOnPage > 1){
+      var parent = document.getElementById(`fig${i}`);
+      var child = parent.firstElementChild;
+
+      if(child){child.remove();}
+
+
+      var newIdName = PRODUCT_ARRAY[lastPageImages[i]].HTMLid;
+      var newImgPath = PRODUCT_ARRAY[lastPageImages[i]].imgFilePath;
+
+
+      var newChild = document.createElement('img');
+      newChild.setAttribute('class', 'product');
+      newChild.setAttribute('id', newIdName);
+      newChild.setAttribute('src', newImgPath);
+      parent.appendChild(newChild);
+      addViewsOfProduct();
+    }
+  }
+};
+
+
+function addViewsOfProduct() {
+  for (var i = 0; i < 3; i++){
+    var productIndex = lastPageImages[i];
+
+  }
+}
+
+var getRandomForTotalVotes = function(){
+  return Math.floor(Math.random() * 8);
+};
+
+
+//--------------------------------
+// Displays Ol and Chart Results
+//--------------------------------
+var resultList = function(){
+  document.getElementById('myChart').style.visibility = 'visible';
+  var productItem = document.getElementById('result');
+  var productItemOl = document.getElementById('resultList');
+
+  for(var i = 0; i < productSrc.length; i++){
+    var li = document.createElement('li');
+
+    //---Having issues with totalVotes not calculating. As of now have getRandom() generating totalVotes
+
+    // li.textContent = `${PRODUCTS[productSrc[i][1]].totalVotes} votes for ${PRODUCTS[productSrc[i][1]].name}`;
+    li.textContent = `${getRandomForTotalVotes()} votes for ${PRODUCTS[productSrc[i][1]].name}`;
+    productItemOl.appendChild(li);
+
+    productItem.style.visibility = 'visible';
+    productItemOl.style.visibility = 'visible';
+  }
+};
+//-----------------------
+//Event Listener
+//-----------------------
+var voteForAnImage = function(event){
+  event.preventDefault();
+
+  if(event.target.className === 'product'){
+    totalVotesOnPage++;
+
+    // selectionState.totalVotesOnPage = totalVotesOnPage;
+
+    getThreeRandomImages();
+    displayCurrentImages();
+
+    //----Having issues with gettin totalVotes
+    if(totalVotesOnPage === 25){
+      content.removeEventListener('click', voteForAnImage);
+      console.log(totalVotesOnPage + ' votes completed');
+
+      displayResults();
+
+    }
+  }
+  // setStateToLocalStorage();
+};
+//--------------------------------
+//Generate new Product Instances
+//--------------------------------
+(function createProducts(){
+  for(var i = 0; i < productSrc.length; i++){
+    new Product(productSrc[i][0], productSrc[i][1], productSrc[i][2]);    new Product(productSrc[i][0], productSrc[i][1], productSrc[i][2]);
+  }
+})();
+
+//-----------------------
+//Displays Results
+//-----------------------
+var displayResults = function(){
+  resultList();
+};
+
+//---------------------------------
+//
+//              Chart
+//
+//----------------------------------
+var keys = Object.keys(PRODUCTS);
+var dataSets = [];
+var labels = [];
+
+for(var i = 0; i < keys.length; i++){
+  dataSets.push(getRandomForTotalVotes());
+  labels.push(PRODUCTS[keys[i]].name);
+}
+var displayBarChart = function(){
+  var ctx = document.getElementById('myChart').getContext('2d');
+
+  var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: '# of Votes',
+        data: dataSets,
+        backgroundColor: [
+          'rgb(255, 150, 132)',
+          'rgb(54, 162, 235)',
+          'rgb(255, 206, 86)',
+          'rgb(75, 192, 192)',
+          'rgb(153, 2, 255)',
+          'rgb(255, 150, 132)',
+          'rgb(54, 162, 235)',
+          'rgb(255, 206, 86)',
+          'rgb(75, 192, 192)',
+          'rgb(153, 2, 255)',
+          'rgb(255, 150, 132)',
+          'rgb(54, 162, 235)',
+          'rgb(255, 206, 86)',
+          'rgb(75, 192, 192)',
+          'rgb(153, 2, 255)',
+          'rgb(255, 150, 132)',
+          'rgb(54, 162, 235)',
+          'rgb(255, 206, 86)',
+          'rgb(75, 192, 192)',
+          'rgb(153, 2, 255)',
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+        ],
+        borderWidth: 1
+
+      }]
+    },
+    options: {
+      scales: {
+      }
+    }
+  });
+};
+displayBarChart();
+
+// --------------------------------------------------------------
+//                        Run Script
+// --------------------------------------------------------------
 
 content.addEventListener('click', voteForAnImage);
 
-//Generating Random Picture and attaching it to the body
-var displayRandomImage = function(){
-  for(var i = 0; i < 3; i++){
-    var newImage = Math.floor(Math.random() * productSrc.length);
-    var randomImage = productSrc[newImage];
-    console.log(randomImage);
-    lastCycleImage.push(randomImage[0]);
-    console.log(newImage);
-
-    var randomIndex = displayRandomImage();
-    while(lastCycleImage.includes(randomIndex)){
-      randomIndex = displayRandomImage();
-    }
-    lastCycleImage.push(displayRandomImage());
-  }
-};
-
-getNextImages();
-console.log(getNextImages());
-// if (lastCycleImage > 3){
-//   lastCycleImage.shift()*3;
-// }
-  }
-
-//   //   //stackoverflow - https://stackoverflow.com/questions/14004318/show-random-image-from-array-in-javascript
-//   // var randomImage = productsArray[newImage];
-//   // lastCycleImage.push(randomImage[0]);
-
-//   console.log(lastCycleImage);
-//   //create empty array, push randomimage path into an array and use array.protoype find to get the index number
-
-//   //have img paths being pushed into empty array one by one until it hits 5
-//   //use function to shift 3 images out of array. Still need to have images appear at the same time
-  
-//   var fig = document.getElementById(`fig${i}`);
+var PRODUCT_ARRAY = Object.values(PRODUCTS);
 
 
-//   var imageOne = document.getElementById('imgOne');
-//   imageOne.setAttribute('src', lastCycleImage[0]);
-
-//   var imageTwo = document.getElementById('imgTwo');
-//   imageTwo.setAttribute('src', lastCycleImage[1]);
-
-//   var imageThree = document.getElementById('imgThree');
-//   imageThree.setAttribute('src', lastCycleImage[2]);
-
-//   // selectionState.currentCycle = currentCycle;
-//   // selectionState.lastCycleImage = lastCycleImage;
-
-};
-
-var getNextImages = function(){
-  for(var i = 0; i < 3; i++){
-    var randomIndex = displayRandomImage();
-    while(lastCycleImage.includes(randomIndex)){
-      randomIndex = displayRandomImage();
-    }
-    lastCycleImage.push(displayRandomImage());
-  }
-};
-
-getNextImages();
-console.log(getNextImages());
-// if (lastCycleImage > 3){
-//   lastCycleImage.shift()*3;
-// }
-// for(var i = 0; i < productSrc.length; i++){
-//   var randomProduct = new Product(productSrc[i][0], productSrc[i][1], productSrc[i][2]);
-//   randomProduct.render('imgOne');
-// }
-
-//---------------------------
-//
-// Chart
-//
-//---------------------------
-
-var ctx = document.getElementById('myChart').getContext('2d');
-var myChart = new Chart(ctx, {
-  type: 'bar',
-  data: {
-    labels: ['Bathroom', 'Shark', 'Unicorn', 'Dragon', 'Pen'],
-    datasets: [{
-      label: '# of Votes',
-      data: [3, 4, 2, 5, 1],
-      backgroundColor: [
-        'rgb(255, 150, 132)',
-        'rgb(54, 162, 235)',
-        'rgb(255, 206, 86)',
-        'rgb(75, 192, 192)',
-        'rgb(153, 2, 255)',
-      ],
-      borderColor: [
-        'rgba(255, 99, 132, 1)',
-        'rgba(54, 162, 235, 1)',
-        'rgba(255, 206, 86, 1)',
-        'rgba(75, 192, 192, 1)',
-        'rgba(153, 102, 255, 1)',
-      ],
-      borderWidth: 1
-
-    }]
-  },
-});
-
-//-------------
-//JSON
-//-------------
-
-var STATE_KEY = 'voteState';
-var selectionState = {
-  totalVotesOnPage: 0,
-  lastCycleImage: [],
-  currentCycle: [],
-};
-// 1. What to put in local storage
-// totalViews - totalVotes - totalVotesOnPage - currentCycle - PreviousCyle
-
-//2. When to update local storage
-// totalViews - totalVotes - totalVotesOnPage
 
 
-function setStateToLocalStorage(){
-  localStorage.setItem(STATE_KEY, JSON.stringify(selectionState));
-}
-
-// function renderVotes(){
-//   counterState.totalVotesOnPage = totalVotesOnPage;
-//   counterState.lastCycleImage = lastCycleImage;
-// }
-
-function getStateFromLocalStorage(){
-  if(localStorage[STATE_KEY]){
-    var rawState = localStorage.getItem(STATE_KEY);
-    selectionState = JSON.parse(rawState);
-  }
-}
-setStateToLocalStorage();
-// renderVotes();
