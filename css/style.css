@@ -51,7 +51,7 @@ header{
     display: block;
     width: 900px! important;
     height: 500px! important;
-    grid-column-start: 3;
+    grid-column-start: 4;
     grid-column-end: 11;
     visibility: hidden;
 

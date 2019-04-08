@@ -6,9 +6,6 @@ var PRODUCTS = {};
 var lastPageImages = [ ];
 var totalVotesOnPage = 0;
 var content = document.getElementById('content');
-var RESULTLABELS = [];
-var RESULTDATAVOTES = [];
-var chartData = [];
 
 var productSrc = [
   ['./img/bag.jpg', 'bag', 'bag'],
@@ -17,7 +14,7 @@ var productSrc = [
   ['./img/boots.jpg', 'boots', 'boots'],
   ['./img/breakfast.jpg','breakfast', 'breakfast'],
   ['./img/bubblegum.jpg', 'bubblegum', 'bubblegum'],
-  ['./img/chair.jpg', 'chair ', 'chair'],
+  ['./img/chair.jpg', 'chair', 'chair'],
   ['./img/cthulhu.jpg', 'cthulhu', 'cthulhu'],
   ['./img/dog-duck.jpg', 'dog-duc', 'dog-duc'],
   ['./img/dragon.jpg', 'dragon', 'dragon'],
@@ -37,6 +34,10 @@ var productSrc = [
 //                   Define Functions
 // -----------------------------------------------------------------
 
+
+//-----------------------
+//Constructor Function
+//-----------------------
 function Product(imgFilePath, name, HTMLid){
   this.imgFilePath = imgFilePath;
   this.name = name;
@@ -63,12 +64,16 @@ Product.prototype.render = function(parentId){
   parent.appendChild(img);
 };
 
-//Gets random Index
+//-----------------------
+//Gets Random Index
+//-----------------------
 var getRandom = function(){
   return Math.floor(Math.random() * productSrc.length);
 };
 
-
+//-----------------------------
+//Gets Three Random Images
+//-----------------------------
 var getThreeRandomImages = function(){
   for(var i = 0; i < 3; i++){
     var randomIndex = getRandom();
@@ -79,12 +84,16 @@ var getThreeRandomImages = function(){
     lastPageImages.push(randomIndex);
   }
 
-  if(lastPageImages.length === 6){
+  if(lastPageImages.length > 3){
     lastPageImages.shift();
     lastPageImages.shift();
     lastPageImages.shift();
   }
 };
+
+//-----------------------
+//Display Images
+//-----------------------
 
 var displayCurrentImages = function(){
 
@@ -96,8 +105,8 @@ var displayCurrentImages = function(){
       if(child){child.remove();}
 
   
-      var newIdName = PRODUCTSARRAY[lastPageImages[i]].HTMLid;
-      var newImgPath = PRODUCTSARRAY[lastPageImages[i]].imgFilePath;
+      var newIdName = PRODUCT_ARRAY[lastPageImages[i]].HTMLid;
+      var newImgPath = PRODUCT_ARRAY[lastPageImages[i]].imgFilePath;
 
 
       var newChild = document.createElement('img');
@@ -118,30 +127,38 @@ function addViewsOfProduct() {
   }
 }
 
-//Displays Ol for results
+var getRandomForTotalVotes = function(){
+  return Math.floor(Math.random() * 8);
+};
+
+
+//--------------------------------
+// Displays Ol and Chart Results
+//--------------------------------
 var resultList = function(){
   document.getElementById('myChart').style.visibility = 'visible';
-
   var productItem = document.getElementById('result');
   var productItemOl = document.getElementById('resultList');
 
   for(var i = 0; i < productSrc.length; i++){
     var li = document.createElement('li');
-
+    
     //---Having issues with totalVotes not calculating. As of now have getRandom() generating totalVotes
    
     // li.textContent = `${PRODUCTS[productSrc[i][1]].totalVotes} votes for ${PRODUCTS[productSrc[i][1]].name}`;
-    li.textContent = `${getRandom()} votes for ${PRODUCTS[productSrc[i][1]].name}`;
+    li.textContent = `${getRandomForTotalVotes()} votes for ${PRODUCTS[productSrc[i][1]].name}`;
     productItemOl.appendChild(li);
-
 
     productItem.style.visibility = 'visible';
     productItemOl.style.visibility = 'visible';
   }
-
-  // document.getElementById('myChart').style.visibility = 'visible';
 };
 
+console.log(productSrc.length);
+
+//-----------------------
+//Event Listener
+//-----------------------
 
 var voteForAnImage = function(event){
   event.preventDefault();
@@ -157,26 +174,33 @@ var voteForAnImage = function(event){
     //----Having issues with gettin totalVotes
     // PRODUCTS[event.target.id].totalVotes++;
     
-    if(totalVotesOnPage === 5){
+    if(totalVotesOnPage === 25){
       content.removeEventListener('click', voteForAnImage);
       console.log(totalVotesOnPage + ' votes completed');
+      
       displayResults();
+      
     }
   }
   // setStateToLocalStorage();
 };
 
 
-// Generates new Products - IIFE
+//--------------------------------
+//Generate new Product Instances
+//--------------------------------
 (function createProducts(){
   for(var i = 0; i < productSrc.length; i++){
     new Product(productSrc[i][0], productSrc[i][1], productSrc[i][2]);    new Product(productSrc[i][0], productSrc[i][1], productSrc[i][2]);
   }
 })();
 
+
+//-----------------------
+//Displays Results
+//-----------------------
 var displayResults = function(){
   resultList();
-  // displayBarChart();
 };
 
 //---------------------------------
@@ -191,13 +215,9 @@ var dataSets = [];
 var labels = [];
 
 for(var i = 0; i < keys.length; i++){
-  dataSets.push(getRandom());
+  dataSets.push(getRandomForTotalVotes());
   labels.push(PRODUCTS[keys[i]].name);
 }
-
-console.log(dataSets);
-console.log(labels);
-
 
 var displayBarChart = function(){
   var ctx = document.getElementById('myChart').getContext('2d');
@@ -259,9 +279,7 @@ var displayBarChart = function(){
     },
     options: {
       scales: {
-    
       }
-
     }
   });
 };
@@ -274,6 +292,7 @@ displayBarChart();
 
 content.addEventListener('click', voteForAnImage);
 
-var PRODUCTSARRAY = Object.values(PRODUCTS);
+var PRODUCT_ARRAY = Object.values(PRODUCTS);
+
 
 
