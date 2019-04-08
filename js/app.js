@@ -120,7 +120,7 @@ function addViewsOfProduct() {
 
 //Displays Ol for results
 var resultList = function(){
-  // document.getElementById('myChart').style.visibility = 'visible';
+  document.getElementById('myChart').style.visibility = 'visible';
 
   var productItem = document.getElementById('result');
   var productItemOl = document.getElementById('resultList');
@@ -176,7 +176,7 @@ var voteForAnImage = function(event){
 
 var displayResults = function(){
   resultList();
-  displayBarChart();
+  // displayBarChart();
 };
 
 //---------------------------------
@@ -195,6 +195,9 @@ for(var i = 0; i < keys.length; i++){
   labels.push(PRODUCTS[keys[i]].name);
 }
 
+console.log(dataSets);
+console.log(labels);
+
 
 var displayBarChart = function(){
   var ctx = document.getElementById('myChart').getContext('2d');
@@ -202,10 +205,10 @@ var displayBarChart = function(){
   var myChart = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: [[labels]],
+      labels: labels,
       datasets: [{
         label: '# of Votes',
-        data: [[dataSets]],
+        data: dataSets,
         backgroundColor: [
           'rgb(255, 150, 132)',
           'rgb(54, 162, 235)',
@@ -254,10 +257,15 @@ var displayBarChart = function(){
 
       }]
     },
+    options: {
+      scales: {
+    
+      }
+
+    }
   });
 };
 
-console.log(PRODUCTS.totalVotes);
 displayBarChart();
 
 // --------------------------------------------------------------
